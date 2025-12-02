@@ -152,8 +152,6 @@ export default async function InboundCallLogs({
     }
   );
 
-  console.log(response);
-
   // Handle array response from fetchTableData
   const apiResponse = Array.isArray(response) ? response[0] : response;
 
@@ -226,7 +224,9 @@ export default async function InboundCallLogs({
                           formatPhoneNumber(item.phoneNumber)
                         )}&message=${encodeURIComponent(
                           item.first_message?.trim() ?? ""
-                        )}&serviceId=${encodeURIComponent(item.serviceId)}`}
+                        )}&serviceId=${encodeURIComponent(
+                          item.serviceId
+                        )}&agentId=${encodeURIComponent(item.agentId)}`}
                       >
                         <SquarePen />
                       </Link>

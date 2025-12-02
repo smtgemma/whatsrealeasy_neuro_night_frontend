@@ -10,6 +10,13 @@ import { safeAsync } from "@/lib/safeAsync";
 import { env } from "@/env";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function CreateInboundAgent() {
   const [formData, setFormData] = useState({
@@ -18,6 +25,8 @@ export default function CreateInboundAgent() {
     greetingMessage: "",
     files: [] as File[],
   });
+
+  const [voice, setVoice] = useState("male");
 
   const [isPending, startTransition] = useTransition();
 
@@ -50,7 +59,9 @@ export default function CreateInboundAgent() {
               env.NEXT_PUBLIC_API_BASE_URL_AI_INBOUND
             }/services/create-service/?serviceName=${encodeURIComponent(
               formData.serviceName
-            )}&phoneNumber=${encodeURIComponent(formData.phoneNumber)}`,
+            )}&phoneNumber=${encodeURIComponent(
+              formData.phoneNumber
+            )}&voice_gender=${voice}`,
             {
               method: "POST",
               headers: {
@@ -156,6 +167,15 @@ export default function CreateInboundAgent() {
                   onChange={handleFormdataChange}
                 />
               </Label>
+              <Select value={voice} onValueChange={setVoice}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select voice" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <Textarea

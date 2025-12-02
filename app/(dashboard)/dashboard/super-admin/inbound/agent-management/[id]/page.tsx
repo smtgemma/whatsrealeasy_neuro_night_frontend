@@ -11,12 +11,22 @@ import { env } from "@/env";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function CreateInboundAgent() {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
   const serviceId = decodeURIComponent(searchParams.get("serviceId") || "");
+  const [voice, setVoice] = useState("male");
+
+  const agentId = decodeURIComponent(searchParams.get("agentId") || "");
 
   const [formData, setFormData] = useState({
     serviceName: decodeURIComponent(searchParams.get("service") || ""),
@@ -40,14 +50,28 @@ export default function CreateInboundAgent() {
     startTransition(async () => {
       await safeAsync(
         async () => {
-          console.log(formData);
-
           // return;
           toast.success("Updating agent...");
 
           // --- Update service ---
           await fetch(
-            `${env.NEXT_PUBLIC_API_BASE_URL_AI_INBOUND}/services/update-service/?service_id=${serviceId}`,
+            `${env.NEXT_PUBLIC_API_BASE_URL_AI_INBOUND}/services/update-service/?service_id=${serviceId}&voice_gender=${voice}&agent_id=${agentId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                serviceName: formData.serviceName,
+                phoneNumber: decodeURIComponent(
+                  searchParams.get("phone") || ""
+                ),
+              }),
+            }
+          );
+
+          await fetch(
+            `${env.NEXT_PUBLIC_API_BASE_URL_AI_INBOUND}/services/update-agent/${agentId}?voice_gender=${voice}`,
             {
               method: "PATCH",
               headers: {
@@ -139,6 +163,15 @@ export default function CreateInboundAgent() {
                   readOnly
                 />
               </Label>
+              <Select value={voice} onValueChange={setVoice}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select voice" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <Textarea

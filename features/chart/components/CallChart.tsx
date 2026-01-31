@@ -212,7 +212,7 @@ export default function BookingTrendChart({
             fill="#f97316"
             radius={[6, 6, 0, 0]}
             maxBarSize={60}
-            label={(props) => <CustomLabel {...props} />}
+            label={(props: any) => <CustomLabel {...props} />}
           >
             {transformedData.map((entry, index) => (
               <Cell

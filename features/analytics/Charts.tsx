@@ -90,8 +90,8 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
               {entry.dataKey === "pv"
                 ? "Page Views"
                 : entry.dataKey === "uv"
-                ? "Unique Visitors"
-                : entry.dataKey}
+                  ? "Unique Visitors"
+                  : entry.dataKey}
               :
             </span>
             <span className="text-sm font-medium text-gray-800">
@@ -132,7 +132,7 @@ export default function AnalyticsChart() {
             axisLine={false}
             tickLine={false}
             interval={0}
-            tick={renderQuarterTick}
+            tick={renderQuarterTick as any}
             height={1}
             scale="band"
             xAxisId="quarter"

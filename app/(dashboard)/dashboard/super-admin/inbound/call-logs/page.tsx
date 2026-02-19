@@ -51,7 +51,12 @@ type CallLogApiRow = {
   updatedAt: string;
   service: Service;
   email: string | null;
-  bookings: null | { meetLink: string; startTime?: string; endTime?: string; calendarLink?: string };
+  bookings: null | {
+    meetLink: string;
+    startTime?: string;
+    endTime?: string;
+    calendarLink?: string;
+  };
   call_duration: number | null;
 };
 
@@ -166,13 +171,15 @@ export default async function OutboundCallLogs({
 
   // Fetch typed data
   const response = await fetchTableData<CallLogsApiResponse>(
-    `${env.API_BASE_URL
-    }/call-logs?callType=incoming&page=${page}&limit=${limit}${q ? `&searchTerm=${q}` : ""
+    `${
+      env.API_BASE_URL
+    }/call-logs?callType=incoming&page=${page}&limit=${limit}${
+      q ? `&searchTerm=${q}` : ""
     }${filter ? `&call_status=${filter}` : ""}`,
     {
       headers: { Authorization: token || "" },
       cache: "no-store",
-    }
+    },
   );
 
   // Handle array response from fetchTableData
@@ -211,7 +218,7 @@ export default async function OutboundCallLogs({
   const sorted: CallLogRow[] = sortTableData(
     normalizedData,
     sortField as keyof CallLogRow,
-    sortDirection
+    sortDirection,
   );
 
   // Pagination values
@@ -233,47 +240,49 @@ export default async function OutboundCallLogs({
           <TableFilter /> {/* ✅ Pass initial value */}
         </div>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {tableHeader.map(({ key }) => (
-              <TableHeaderItem
-                key={key}
-                prop={key}
-                currentSort={sortField}
-                sortDirection={sortDirection}
-              />
-            ))}
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {sorted.map((item: CallLogRow) => (
-            <TableRow key={item.id}>
-              {tableHeader.map(({ key }) => {
-                const value = item[key] ?? "N/A";
-
-                // Check if value is a valid URL
-                let content: React.ReactNode = value;
-                if (typeof value === "string" && value.startsWith("http")) {
-                  new URL(value);
-                  content = (
-                    <Button size="sm" asChild>
-                      <Link href={value}>Meet Link</Link>
-                    </Button>
-                  );
-                }
-
-                if (key === "call_transcript") {
-                  content = <CallTranscript content={item.call_transcript} />;
-                }
-
-                return <TableBodyItem key={key}>{content}</TableBodyItem>;
-              })}
+      <div className="overflow-auto max-h-[calc(100vh-280px)] border border-gray-500/30 rounded-lg w-full">
+        <Table className="min-w-max">
+          <TableHeader>
+            <TableRow className="whitespace-nowrap">
+              {tableHeader.map(({ key }) => (
+                <TableHeaderItem
+                  key={key}
+                  prop={key}
+                  currentSort={sortField}
+                  sortDirection={sortDirection}
+                />
+              ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+
+          <TableBody>
+            {sorted.map((item: CallLogRow) => (
+              <TableRow key={item.id}>
+                {tableHeader.map(({ key }) => {
+                  const value = item[key] ?? "N/A";
+
+                  // Check if value is a valid URL
+                  let content: React.ReactNode = value;
+                  if (typeof value === "string" && value.startsWith("http")) {
+                    new URL(value);
+                    content = (
+                      <Button size="sm" asChild>
+                        <Link href={value}>Meet Link</Link>
+                      </Button>
+                    );
+                  }
+
+                  if (key === "call_transcript") {
+                    content = <CallTranscript content={item.call_transcript} />;
+                  }
+
+                  return <TableBodyItem key={key}>{content}</TableBodyItem>;
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       <Pagination totalPages={totalPages} currentPage={page} pageSize={limit} />
     </div>

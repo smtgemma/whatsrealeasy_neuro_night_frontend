@@ -163,4 +163,31 @@
   body {
     @apply bg-dark3 text-white overflow-x-clip;
   }
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-dark3);
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-gray3);
+    border-radius: 10px;
+    border: 2px solid var(--color-dark3);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-blue);
+  }
+
+  /* For Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray3) var(--color-dark3);
+  }
 }

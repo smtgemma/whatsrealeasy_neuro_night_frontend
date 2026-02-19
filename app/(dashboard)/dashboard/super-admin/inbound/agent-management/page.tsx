@@ -149,7 +149,7 @@ export default async function InboundCallLogs({
     `${env.API_BASE_URL}/ai-agents?${queryString}`,
     {
       headers: { Authorization: token || "" },
-    }
+    },
   );
 
   // Handle array response from fetchTableData
@@ -177,7 +177,7 @@ export default async function InboundCallLogs({
   const sorted: AgentTableRow[] = sortTableData(
     normalizedData,
     sortField as keyof AgentTableRow,
-    sortDirection
+    sortDirection,
   );
 
   // Pagination values
@@ -192,52 +192,56 @@ export default async function InboundCallLogs({
           </Link>
         </Button>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {tableHeader.map(({ key }) => (
-              <TableHeaderItem
-                key={key}
-                prop={key}
-                currentSort={sortField}
-                sortDirection={sortDirection}
-              />
-            ))}
-            <th className="">Action</th>
-          </TableRow>
-        </TableHeader>
+      <div className="overflow-auto max-h-[calc(100vh-300px)] border border-gray-500/30 rounded-lg w-full">
+        <Table className="min-w-max">
+          <TableHeader>
+            <TableRow className="whitespace-nowrap">
+              {tableHeader.map(({ key }) => (
+                <TableHeaderItem
+                  key={key}
+                  prop={key}
+                  currentSort={sortField}
+                  sortDirection={sortDirection}
+                />
+              ))}
+              <th className="">Action</th>
+            </TableRow>
+          </TableHeader>
 
-        <TableBody>
-          {sorted.map((item: AgentTableRow) => {
-            return (
-              <TableRow key={item.id}>
-                {tableHeader.map(({ key }) => (
-                  <TableBodyItem key={key}>{item[key] ?? "N/A"}</TableBodyItem>
-                ))}
-                <td>
-                  <div className="flex justify-center">
-                    <Button size="sm" asChild variant="ghost">
-                      <Link
-                        href={`/dashboard/super-admin/inbound/agent-management/${item.id.trim()}?service=${encodeURIComponent(
-                          item.serviceName.trim()
-                        )}&phone=${encodeURIComponent(
-                          formatPhoneNumber(item.phoneNumber)
-                        )}&message=${encodeURIComponent(
-                          item.first_message?.trim() ?? ""
-                        )}&serviceId=${encodeURIComponent(
-                          item.serviceId
-                        )}&agentId=${encodeURIComponent(item.agentId)}`}
-                      >
-                        <SquarePen />
-                      </Link>
-                    </Button>
-                  </div>
-                </td>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+          <TableBody>
+            {sorted.map((item: AgentTableRow) => {
+              return (
+                <TableRow key={item.id}>
+                  {tableHeader.map(({ key }) => (
+                    <TableBodyItem key={key}>
+                      {item[key] ?? "N/A"}
+                    </TableBodyItem>
+                  ))}
+                  <td>
+                    <div className="flex justify-center">
+                      <Button size="sm" asChild variant="ghost">
+                        <Link
+                          href={`/dashboard/super-admin/inbound/agent-management/${item.id.trim()}?service=${encodeURIComponent(
+                            item.serviceName.trim(),
+                          )}&phone=${encodeURIComponent(
+                            formatPhoneNumber(item.phoneNumber),
+                          )}&message=${encodeURIComponent(
+                            item.first_message?.trim() ?? "",
+                          )}&serviceId=${encodeURIComponent(
+                            item.serviceId,
+                          )}&agentId=${encodeURIComponent(item.agentId)}`}
+                        >
+                          <SquarePen />
+                        </Link>
+                      </Button>
+                    </div>
+                  </td>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
 
       <Pagination totalPages={totalPages} currentPage={page} pageSize={limit} />
     </div>

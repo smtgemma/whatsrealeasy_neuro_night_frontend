@@ -34,7 +34,7 @@ export default function DashboardLayout({
       className={cn(`grid transition-[grid] duration-300 bg-dark3 p-4 gap-4`)}
     >
       <div className="[grid-area:sidebar] print:hidden">{sidebar}</div>
-      <div className="[grid-area:main]">
+      <div className="[grid-area:main] min-w-0">
         <div className="sticky top-4 z-50 before:absolute before:inset-0 before:-translate-y-4 before:bg-dark3 before:-z-10">
           <div className="bg-dark2 border-b border-l border-l-dark3 border-b-dark3 shadow backdrop-blur">
             {header}

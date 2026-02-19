@@ -13,10 +13,20 @@ type TableHeaderItemProps = {
   sortDirection: SortDirection;
 };
 
-export function Table({ children }: React.ComponentProps<"table">) {
+export function Table({
+  children,
+  className,
+  ...props
+}: React.ComponentProps<"table">) {
   return (
     <>
-      <table className="table-auto border-collapse border border-gray-500 w-full text-gray-300">
+      <table
+        className={cn(
+          "table-auto border-collapse border border-gray-500 min-w-full text-gray-300",
+          className,
+        )}
+        {...props}
+      >
         {children}
       </table>
     </>
@@ -63,14 +73,14 @@ export function TableHeaderItem({
     <th
       className={cn(
         "text-left cursor-pointer bg-gray-800 group py-1",
-        isActive ? "bg-gray-800" : "hover:bg-gray-800"
+        isActive ? "bg-gray-800" : "hover:bg-gray-800",
       )}
     >
       <button
         onClick={handleSort}
         className={cn(
           "truncate p-2 cursor-pointer inline-flex gap-1.5 items-center leading-0 font-semibold relative capitalize hover:text-white active:text-white after:absolute after:-inset-2",
-          { "text-white": isActive }
+          { "text-white": isActive },
         )}
       >
         <div className="flex-1 whitespace-nowrap text-gray-100">
@@ -79,7 +89,7 @@ export function TableHeaderItem({
         <span
           className={cn(
             "print:hidden text-gray-100 translate-y-px transition transition-200 group-hover:opacity-100 rounded size-4 flex flex-wrap items-center justify-center",
-            { "opacity-100 group-hover:opacity-100 bg-slate-900/80": isActive }
+            { "opacity-100 group-hover:opacity-100 bg-slate-900/80": isActive },
           )}
         >
           {isPending ? (
@@ -92,7 +102,7 @@ export function TableHeaderItem({
                 sortDirection === "desc" ? "rotate-180" : "",
                 isActive
                   ? "opacity-100 text-white"
-                  : "opacity-0 group-hover:opacity-100"
+                  : "opacity-0 group-hover:opacity-100",
               )}
             />
           )}

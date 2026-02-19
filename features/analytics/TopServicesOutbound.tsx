@@ -131,7 +131,7 @@ export default async function TopServicesTableOutbound({
       }`,
       {
         headers: { Authorization: token || "" },
-      }
+      },
     );
 
     apiResponse = Array.isArray(response) ? response[0] : response;
@@ -164,37 +164,39 @@ export default async function TopServicesTableOutbound({
   const sorted: ServiceRow[] = sortTableData(
     normalizedData,
     sortField as keyof ServiceRow,
-    sortDirection
+    sortDirection,
   );
 
   const totalPages: number = meta.totalPages;
 
   return (
     <div className="space-y-6">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {tableHeader.map(({ key, label }) => (
-              <TableHeaderItem
-                key={key}
-                prop={key}
-                currentSort={sortField}
-                sortDirection={sortDirection}
-              />
-            ))}
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {sorted.map((item, idx) => (
-            <TableRow key={idx}>
-              {tableHeader.map(({ key }) => (
-                <TableBodyItem key={key}>{item[key] ?? "N/A"}</TableBodyItem>
+      <div className="overflow-auto max-h-[calc(100vh-300px)] border border-gray-500/30 rounded-lg w-full">
+        <Table className="min-w-max">
+          <TableHeader>
+            <TableRow className="whitespace-nowrap">
+              {tableHeader.map(({ key, label }) => (
+                <TableHeaderItem
+                  key={key}
+                  prop={key}
+                  currentSort={sortField}
+                  sortDirection={sortDirection}
+                />
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+
+          <TableBody>
+            {sorted.map((item, idx) => (
+              <TableRow key={idx}>
+                {tableHeader.map(({ key }) => (
+                  <TableBodyItem key={key}>{item[key] ?? "N/A"}</TableBodyItem>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <Pagination totalPages={totalPages} currentPage={page} pageSize={limit} />
     </div>
   );

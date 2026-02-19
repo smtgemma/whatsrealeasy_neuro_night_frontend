@@ -51,7 +51,7 @@ type CallLogApiRow = {
   updatedAt: string;
   service: Service;
   email: string | null;
-  bookings: null | { meetLink: string };
+  bookings: null | { meetLink: string; startTime?: string; endTime?: string; calendarLink?: string };
   call_duration: number | null;
 };
 
@@ -86,6 +86,8 @@ type CallLogRow = {
   call_duration: number | null;
   call_transcript: string | null;
   meetLink: string | null;
+  bookingStartTime: string | null;
+  bookingEndTime: string | null;
 };
 
 type TableHeader = {
@@ -141,6 +143,12 @@ function normalizeCallLogData(rows: CallLogApiRow[]): CallLogRow[] {
     serviceName: row.service.serviceName,
     email: row?.email || null,
     call_duration: row.call_duration,
+    bookingStartTime: row.bookings?.startTime
+      ? new Date(row.bookings.startTime).toLocaleString()
+      : null,
+    bookingEndTime: row.bookings?.endTime
+      ? new Date(row.bookings.endTime).toLocaleString()
+      : null,
     call_transcript: row.call_transcript,
     meetLink: row.bookings?.meetLink || null,
   }));
@@ -158,10 +166,8 @@ export default async function OutboundCallLogs({
 
   // Fetch typed data
   const response = await fetchTableData<CallLogsApiResponse>(
-    `${
-      env.API_BASE_URL
-    }/call-logs?callType=incoming&page=${page}&limit=${limit}${
-      q ? `&searchTerm=${q}` : ""
+    `${env.API_BASE_URL
+    }/call-logs?callType=incoming&page=${page}&limit=${limit}${q ? `&searchTerm=${q}` : ""
     }${filter ? `&call_status=${filter}` : ""}`,
     {
       headers: { Authorization: token || "" },
@@ -195,6 +201,8 @@ export default async function OutboundCallLogs({
     { key: "area", label: "Area" },
     { key: "email", label: "Email" },
     { key: "call_duration", label: "Duration" },
+    { key: "bookingStartTime", label: "Booking Start" },
+    { key: "bookingEndTime", label: "Booking End" },
     { key: "call_transcript", label: "Transcript" },
     { key: "meetLink", label: "Meet Link" },
   ] as const;
